@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JobTrack AI — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    [data-theme="dark"]{--bg:#060608;--s1:#0e0e14;--s2:#16161f;--border:#252535;--border2:#2e2e42;--text:#ececf4;--muted:#5a5a7a;--muted2:#8080a0}
+    [data-theme="light"]{--bg:#f0f0f7;--s1:#ffffff;--s2:#f5f5fc;--border:#dcdcec;--border2:#c8c8e0;--text:#12121e;--muted:#a0a0c0;--muted2:#6060a0}
+    :root{--acc:#7c6dfa;--acc2:#fa6d8b;--acc3:#6dfaaa}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:background 0.3s}
+    body::before{content:'';position:fixed;top:-30%;left:-10%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(124,109,250,0.07) 0%,transparent 70%);pointer-events:none;animation:float 10s ease-in-out infinite}
+    body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:40vw;height:40vw;background:radial-gradient(circle,rgba(250,109,139,0.05) 0%,transparent 70%);pointer-events:none;animation:float 14s ease-in-out infinite reverse}
+    @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(3%,3%)}}
+    .card{background:var(--s1);border:1px solid var(--border);border-radius:24px;padding:44px 40px;width:100%;max-width:420px;position:relative;z-index:1;animation:slideUp 0.4s ease;box-shadow:0 24px 60px rgba(0,0,0,0.3)}
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    .theme-btn-wrap{position:absolute;top:16px;right:16px;display:flex;align-items:center;gap:6px}
+    .theme-btn{width:40px;height:22px;background:var(--border2);border-radius:100px;border:none;cursor:pointer;position:relative}
+    .theme-btn::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--acc);border-radius:50%;transition:transform 0.3s}
+    [data-theme="light"] .theme-btn::after{transform:translateX(18px)}
+    .logo{text-align:center;margin-bottom:32px}
+    .logo-icon{font-size:48px;margin-bottom:12px}
+    .logo-text{font-size:28px;font-weight:900;letter-spacing:-1px}
+    .logo-text span{color:var(--acc)}
+    .logo-badge{display:inline-block;font-size:9px;font-family:'JetBrains Mono',monospace;background:rgba(124,109,250,0.15);color:var(--acc);padding:3px 10px;border-radius:100px;margin-top:6px;border:1px solid rgba(124,109,250,0.2)}
+    .logo-sub{font-size:14px;color:var(--muted2);margin-top:8px;line-height:1.5}
+    .google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px;background:var(--s1);border:2px solid var(--border2);border-radius:14px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:var(--text);text-decoration:none;transition:all 0.2s;margin-bottom:16px}
+    .google-btn:hover{border-color:var(--acc);background:rgba(124,109,250,0.05);transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,109,250,0.15)}
+    .google-icon{width:22px;height:22px;flex-shrink:0}
+    .divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted2);font-size:12px}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+    .feature{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted2);background:var(--s2);padding:10px 12px;border-radius:10px;border:1px solid var(--border)}
+    .feature-icon{font-size:16px}
+    .error-msg{background:rgba(250,109,139,0.1);border:1px solid rgba(250,109,139,0.3);color:var(--acc2);padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;text-align:center}
+    .privacy-note{font-size:11px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.6}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="theme-btn-wrap">
+      <span id="themeIcon">🌙</span>
+      <button class="theme-btn" onclick="toggleTheme()"></button>
+    </div>
+    <div class="logo">
+      <div class="logo-icon">🚀</div>
+      <div class="logo-text">Job<span>Track</span> AI</div>
+      <div class="logo-badge">v5.0 — Career Intelligence</div>
+      <div class="logo-sub">Your AI-powered placement companion<br/>for the 2026 batch</div>
+    </div>
+    {% if error %}
+    <div class="error-msg">⚠️ Sign in failed. Please try again.</div>
+    {% endif %}
+    <a href="/auth/google" class="google-btn">
+      <svg class="google-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Continue with Google
+    </a>
+    <div class="divider">everything you need for placements</div>
+    <div class="features">
+      <div class="feature"><span class="feature-icon">📋</span> Track Applications</div>
+      <div class="feature"><span class="feature-icon">🤖</span> AI Job Finder</div>
+      <div class="feature"><span class="feature-icon">📄</span> Resume Scorer</div>
+      <div class="feature"><span class="feature-icon">🎤</span> Mock Interview</div>
+      <div class="feature"><span class="feature-icon">📊</span> Analytics</div>
+      <div class="feature"><span class="feature-icon">📝</span> Cover Letters</div>
+    </div>
+    <div class="privacy-note">🔒 We only access your name and email.<br/>Your data is private and never shared.</div>
+  </div>
+<script>
+  function initTheme(){const s=localStorage.getItem('jt-theme')||'dark';document.documentElement.setAttribute('data-theme',s);document.getElementById('themeIcon').textContent=s==='dark'?'🌙':'☀️'}
+  function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('jt-theme',n);document.getElementById('themeIcon').textContent=n==='dark'?'🌙':'☀️'}
+  initTheme();
+</script>
+</body>
+</html>
