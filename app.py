@@ -279,6 +279,7 @@ def ai_prep():
     data = request.json
     company = data.get('company', '')
     role = data.get('role', '')
+    is_cover = data.get('cover_letter', False)
 
     conn = get_db()
     p = conn.execute('SELECT * FROM profile WHERE id=1').fetchone()
@@ -292,8 +293,65 @@ def ai_prep():
                 pd[f] = json.loads(pd[f]) if pd[f] else []
             except:
                 pd[f] = []
-        profile_context = f"Candidate: {pd.get('degree', 'B.Tech CSE')}, CGPA {pd.get('cgpa', '8.92')}, Skills: {', '.join(pd.get('skills', []))}"
+        profile_context = (
+            f"Name: {pd.get('name', 'Gutta Dharan')}, "
+            f"Degree: {pd.get('degree', 'B.Tech CSE')}, "
+            f"CGPA: {pd.get('cgpa', '8.92')}, "
+            f"Skills: {', '.join(pd.get('skills', []))}, "
+            f"Certs: {', '.join(pd.get('certifications', []))}, "
+            f"Projects: {', '.join(pd.get('projects', []))}"
+        )
 
+    if is_cover:
+        tone = data.get('tone', 'professional')
+        jd = data.get('jd', '')
+        name = data.get('name', 'Gutta Dharan')
+        cgpa = data.get('cgpa', '8.92')
+        degree = data.get('degree', 'B.Tech CSE')
+        skills = data.get('skills', '')
+        certifications = data.get('certifications', '')
+        projects = data.get('projects', '')
+
+        prompt = f"""Write a {tone} cover letter for a 2026 B.Tech CSE fresher applying to {company} for the {role} role.
+
+Candidate Details:
+- Name: {name}
+- Degree: {degree}, CGPA: {cgpa}
+- Skills: {skills}
+- Certifications: {certifications}
+- Projects: {projects}
+{f'- Job Description Keywords: {jd}' if jd else ''}
+
+Requirements:
+- 3-4 paragraphs, professional format
+- Start with "Dear Hiring Manager,"
+- Mention specific skills that match the role
+- Reference at least one project
+- End with enthusiasm and call to action
+- Sign off with the candidate's name
+- Keep it under 350 words
+- Tone: {tone}
+
+Write the complete cover letter now:"""
+
+        result = call_gemini(prompt)
+        if not result:
+            result = f"""Dear Hiring Manager,
+
+I am writing to express my strong interest in the {role} position at {company}. As a final year B.Tech Computer Science student at KL University with a CGPA of {cgpa}, I am excited about the opportunity to contribute to your team.
+
+Throughout my academic journey, I have developed strong technical skills in {skills}. My project "{projects.split(',')[0] if projects else 'JobTrack AI'}" demonstrates my ability to build real-world applications — I designed and developed a full-stack AI-powered system that solves genuine problems using modern technologies.
+
+My certifications in {certifications} reflect my commitment to continuous learning beyond the classroom. I am confident that my technical foundation, combined with my passion for building impactful products, aligns well with {company}'s goals.
+
+I would welcome the opportunity to discuss how my skills and enthusiasm can contribute to {company}. Thank you for considering my application.
+
+Sincerely,
+{name}"""
+
+        return jsonify({'cover_letter': result})
+
+    # Regular prep guide
     prompt = f"""You are a career coach for a 2026 B.Tech CSE fresher in India.
 {profile_context}
 Give a specific preparation guide for: Company: {company}, Role: {role}
