@@ -3,6 +3,7 @@ import sqlite3, os, json, re
 from datetime import datetime
 from google import genai as google_genai
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
@@ -522,5 +523,6 @@ def index():
 
 if __name__ == '__main__':
     init_db()
-    print("\n🚀 JobTrack AI v3.0 running at http://localhost:5000\n")
-    app.run(debug=True)
+    print("\n🚀 JobTrack AI v5.0 running at http://localhost:5000\n")
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
