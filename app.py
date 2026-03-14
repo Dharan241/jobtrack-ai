@@ -7,7 +7,7 @@ from authlib.integrations.flask_client import OAuth
 import functools
 
 load_dotenv()
-
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "jobtrack-ai-secret-2026")
 DB_PATH = "jobtrack.db"
@@ -117,7 +117,7 @@ def login_page():
 
 @app.route('/auth/google')
 def auth_google():
-    redirect_uri = url_for('auth_callback', _external=True)
+    redirect_uri = "https://jobtrack-ai-production.up.railway.app/auth/callback"
     return google.authorize_redirect(redirect_uri)
 
 @app.route('/auth/callback')
