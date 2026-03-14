@@ -7,7 +7,7 @@ from authlib.integrations.flask_client import OAuth
 import functools
 
 load_dotenv()
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "jobtrack-ai-secret-2026")
 DB_PATH = "jobtrack.db"
